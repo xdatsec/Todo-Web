@@ -1,4 +1,4 @@
-# Todo App
+# Todo Web App
 
 A simple Todo App for creating, managing, and completing daily tasks.
 
