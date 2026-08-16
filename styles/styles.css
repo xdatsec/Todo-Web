@@ -95,3 +95,23 @@
     background: #1565c0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
+.btnaction
+{
+
+    border:none;
+    
+}
+.btnactions
+{
+    background-color:black!important;
+    border:none!important;
+    border-color: rgb(247, 247, 247)!important;
+    border: solid !important;
+    border-width: thin !important;;
+
+}
+.btnactions:hover
+{
+    background-color: white!important;
+    color:black!important;
+}
