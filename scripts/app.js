@@ -5,7 +5,7 @@ const modalElement = document.getElementById("addtask");
 const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
 const alertcontainer = document.querySelector('.alertcontainer');
 const alertcontent = document.querySelector('.alertcontet');
-const task = document.querySelector('.fetchtask');
+
 const container  = document.querySelector('.taskcontainer');
 const cureentdate = new Date()
 
@@ -68,10 +68,7 @@ addTaskbtnModal.addEventListener("click", function(){
     else
         pushtask(taskName, taskDescription);
 });
-task.addEventListener("click" , function(){
 
-    FechTask();
-});
 
 const FechTask = () =>
 {
