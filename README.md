@@ -2,7 +2,7 @@
 
 A simple Todo App for creating, managing, and completing daily tasks.
 
->  **Project Status:** 10% complete
+>  **Project Status:** 90% complete
 
 ##  Screenshot
 
