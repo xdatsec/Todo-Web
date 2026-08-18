@@ -1,16 +1,9 @@
-const addTaskButton = document.querySelector('.addtask');
-const addTaskbtnModal = document.querySelector('#addtaskbtnmodal');
 let TaskStorage = JSON.parse(localStorage.getItem("tasks")) || [];
 const modalElement = document.getElementById("addtask");
 const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
-const alertcontainer = document.querySelector('.alertcontainer');
-const alertcontent = document.querySelector('.alertcontet');
-
-const container  = document.querySelector('.taskcontainer');
 const cureentdate = new Date()
-
+let tabhandle = 0;
 const ActionsContainer = document.querySelector('.btnactions');
-const TaskItems = document.querySelector('.taskitem');
 let ContainerStatus = 0;
 const  daysBetween = (date1, date2) => {
     const d1 = new Date(date1);
@@ -41,12 +34,12 @@ const pushtask = (taskName, taskDescription) => {
     modal.hide();
     console.log(TaskStorage);
     ShowAlert("A task has been added to your task list");
-    FechTask();
+    FechTask(1);
 };
 const ShowAlert = (message) =>
 {
     $(".alertcontainer").fadeIn();
-    alertcontent.innerHTML= message;
+    $(".alertcontet").text(message);
     setInterval(HideAlert, 3000);
 
 }
@@ -54,8 +47,7 @@ const HideAlert = () =>
 {
     $(".alertcontainer").fadeOut();
 }
-addTaskbtnModal.addEventListener("click", function(){
-
+$("#addtaskbtnmodal").click(function(){
     const taskName = document.querySelector('#taskinput').value;
     const taskDescription = document.querySelector('#taskdescinput').value;
 
@@ -69,44 +61,98 @@ addTaskbtnModal.addEventListener("click", function(){
         pushtask(taskName, taskDescription);
 });
 
-
-const FechTask = () =>
+$(".taskbtn").click(function()
 {
-    container.innerHTML="";
-    let count = 0;
-    TaskStorage.forEach(element => {
-        const between = daysBetween(element.date, cureentdate);
-        const emptyTask = document.createElement("div");
-        const dateitem  = between == 0? "Today" : between+"Days Ago";
-        if(element.completed == false)
-        {
-            emptyTask.innerHTML = `
-            <a id="`+element.id+`" href="#" style="border:none; background: #0c0b0c !important;" class="taskitem list-group-item mb-1 list-group-item-action flex-column align-items-start active">
-            <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1" style="overflow-wrap: break-word;word-wrap: break-word;white-space: normal;max-width: 80%;">`+element.title+`</h5>
-                <small>`+dateitem+`</small>
-            </div>
-            <p class="mb-1" style="overflow-wrap: break-word;word-wrap: break-word;white-space: normal;max-width: 100%;">`+element.taskDescription+`</p>
-            
-              <div class="btnaction w-100 " id="action`+element.id+`" style="display:none">
-                <button id="`+element.id+`" class="markcomp me-2 btnactions btn btn-primary rounded-0" >Mark as Complete</button>
-                <button id="`+element.id+`" class="removetask btnactions btn btn-primary rounded-0">Remove Task</button>
-            </div>
-            </a>`;
-            count++;
-            container.append(emptyTask);
-        }
+
     
-        
-    });
+    setTabsStorage(1);
+    FechTask(1);
+});
+
+$(".completedtask").click(function()
+{
+    setTabsStorage(0);
+    FechTask(2);
+});
+const getTabsStorage = () =>
+{
+    return localStorage.getItem("tabhandle");
+}
+const setTabsStorage = (item) =>
+{
+    localStorage.setItem("tabhandle", item);
+}
+const setDataTask = (element) =>
+{
+    const between = daysBetween(element.date, cureentdate);
+    const emptyTask = document.createElement("div");
+    const dateitem  = between == 0? "Today" : between+" Days Ago";
+
+    emptyTask.innerHTML = `
+                <a id="`+element.id+`" href="#" style="border:none; background: #0c0b0c !important;" class="taskitem list-group-item mb-1 list-group-item-action flex-column align-items-start active">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1" style="overflow-wrap: break-word;word-wrap: break-word;white-space: normal;max-width: 80%;">`+element.title+`</h5>
+                    <small>`+dateitem+`</small>
+                </div>
+                <p class="mb-1" style="overflow-wrap: break-word;word-wrap: break-word;white-space: normal;max-width: 100%;">`+element.taskDescription+`</p>
+                
+                <div class="btnaction w-100 " id="action`+element.id+`" style="display:none">
+                    <button id="`+element.id+`" class="markcomp me-2 btnactions btn btn-primary rounded-0" >Mark as Complete</button>
+                    <button id="`+element.id+`" class="removetask btnactions btn btn-primary rounded-0">Remove Task</button>
+                </div>
+                </a>`;
+             
+                $(".taskcontainer").append(emptyTask);
+}
+const setDataEmptyTask= (header, text) =>
+{
+    const emptyTask1 = document.createElement("div");
+        emptyTask1.innerHTML = `<h5 class="no-tasks md-1  fw-bold text-danger">`+header+`</h5>
+        <p class="text-muted mb-4">`+text+`</p>`;
+    $(".taskcontainer").append(emptyTask1);
+}
+const FechTask = (type) =>
+{
+    $(".taskcontainer").html("");
+    let count = 0;
+    if(type == 1)
+    {
+        $('.taskbtn').css("background","#0c0b0c")
+        $('.completedtask').css("background","transparent")
+        $('.addtask').show();
+        $('.todotitle').text("Tasks");
+        TaskStorage.forEach(element => {
+            setTabsStorage(1);
+            if(element.completed == false)
+            {
+                setDataTask(element)
+                count++;
+            }
+               
+        });
+    }else{
+        $('.completedtask').css("background","#0c0b0c")
+        $('.taskbtn').css("background","transparent")
+        $('.addtask').hide();
+        $('.todotitle').text("Completed Task");
+        TaskStorage.forEach(element => {
+            setTabsStorage(2);
+          
+            if(element.completed == true)
+            {
+                setDataTask(element);
+                count++;
+            }
+        });
+    }
     if(count == 0)
     {
-        const emptyTask1 = document.createElement("div");
-
-     
-        emptyTask1.innerHTML = `<h5 class="no-tasks md-1  fw-bold text-danger">Your Task is Empty</h5>
-        <p class="text-muted mb-4">Add a new task to fill your list</p>`;
-        container.append(emptyTask1);
+        if(type == 1)
+        {
+            setDataEmptyTask("Your Task is Empty", "Add a new task to fill your list");
+        }else{
+            setDataEmptyTask("Completed Task is Empty", "Please complete a task to fill your list");
+        }
     }
     const RemoveTask = document.querySelectorAll('.removetask');
 
@@ -128,30 +174,34 @@ const FechTask = () =>
     });
 
     
-
-    MarkComplete.forEach(task => {
-        if(task)
-        {
-            task.addEventListener("click", function(event) {
-                event.preventDefault();
-                event.stopPropagation();
+    if(getTabsStorage() == 1)
+    {
+        MarkComplete.forEach(task => {
+            if(task)
+            {
+                task.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    
                 
-              
-                const elementId = event.currentTarget.id;
+                    const elementId = event.currentTarget.id;
 
-                const taskz = TaskStorage.find(task => task.id == elementId);
-                
-        
-                const confirmation = confirm("Mark as Complete?");
-                if(confirmation)
-                    taskz.completed = true;
+                    const taskz = TaskStorage.find(task => task.id == elementId);
+                    
             
-                localStorage.setItem("tasks", JSON.stringify(TaskStorage));
-                FechTask();
-            });
-        }
-    });
-
+                    const confirmation = confirm("Mark as Complete?");
+                    if(confirmation)
+                        taskz.completed = true;
+                
+                    localStorage.setItem("tasks", JSON.stringify(TaskStorage));
+                    FechTask(1);
+                });
+            }
+        });
+    }else{
+        $(".markcomp").hide();
+    }
+  
     RemoveTask.forEach(task => {
         if(task)
         {
@@ -174,7 +224,7 @@ const FechTask = () =>
                
                     }
                 }
-                FechTask();
+                FechTask(1);
             });
         }
     });
@@ -182,5 +232,10 @@ const FechTask = () =>
 }
 
 $( document ).ready(function() {
-    FechTask();
+    if(getTabsStorage() == null)
+        setTabsStorage(1);
+    else if(getTabsStorage() == 1)
+        FechTask(1);
+    else
+        FechTask(2);
 });
