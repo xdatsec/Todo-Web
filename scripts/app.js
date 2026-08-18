@@ -63,8 +63,6 @@ $("#addtaskbtnmodal").click(function(){
 
 $(".taskbtn").click(function()
 {
-
-    
     setTabsStorage(1);
     FechTask(1);
 });
@@ -113,6 +111,8 @@ const setDataEmptyTask= (header, text) =>
 }
 const FechTask = (type) =>
 {
+    $('.loader').hide();
+    $('.container').fadeIn();
     $(".taskcontainer").html("");
     let count = 0;
     if(type == 1)
